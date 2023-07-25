@@ -26,4 +26,45 @@ export class TodosService {
     const newTodo = await this.todoModel.create({ ...todo, owner: userid });
     return newTodo;
   }
+
+  async completeTodo(
+    username: string,
+    id: string,
+  ): Promise<CreateTodoDto | object> {
+    const owner = await this.userModel.findOne({ username }).select('_id');
+    if (!owner) return {};
+    const updatedTodo = await this.todoModel.findOneAndUpdate(
+      { owner: owner._id, _id: id },
+      { completed: true },
+      { new: true },
+    );
+    return updatedTodo;
+  }
+
+  async inCompleteTodo(
+    username: string,
+    id: string,
+  ): Promise<CreateTodoDto | object> {
+    const owner = await this.userModel.findOne({ username }).select('_id');
+    if (!owner) return {};
+    const updatedTodo = await this.todoModel.findOneAndUpdate(
+      { owner: owner._id, _id: id },
+      { completed: false },
+      { new: true },
+    );
+    return updatedTodo;
+  }
+
+  async removeTodo(
+    username: string,
+    id: string,
+  ): Promise<{ deletedCount: number }> {
+    const owner = await this.userModel.findOne({ username }).select('_id');
+    if (!owner) return { deletedCount: 0 };
+    const result = await this.todoModel.deleteOne({
+      owner: owner._id,
+      _id: id,
+    });
+    return result;
+  }
 }

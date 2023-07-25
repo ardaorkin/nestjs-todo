@@ -35,13 +35,33 @@ export class TodosController {
     return usersTodo;
   }
 
-  @Put(':id')
-  update(@Param('id') id: string): string {
-    return `This action updates a #${id} cat`;
+  @Put(':id/complete')
+  async completeTodo(
+    @Param('id') id: string,
+    @Headers() headers,
+  ): Promise<CreateTodoDto | object> {
+    const { authorization } = headers;
+    const updatedTodo = await this.todoService.completeTodo(authorization, id);
+    return updatedTodo;
+  }
+
+  @Put(':id/incomplete')
+  async inCompleteTodo(
+    @Param('id') id: string,
+    @Headers() headers,
+  ): Promise<CreateTodoDto | object> {
+    const { authorization } = headers;
+    const updatedTodo = await this.todoService.inCompleteTodo(
+      authorization,
+      id,
+    );
+    return updatedTodo;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `This action removes a #${id} cat`;
+  async remove(@Param('id') id: string, @Headers() headers) {
+    const { authorization } = headers;
+    const result = await this.todoService.removeTodo(authorization, id);
+    return result;
   }
 }

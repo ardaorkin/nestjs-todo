@@ -12,6 +12,9 @@ export class Todo {
   @Prop()
   description: string;
 
+  @Prop({ default: false })
+  completed: boolean;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   owner: User;
 }
